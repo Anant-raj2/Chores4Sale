@@ -1,47 +1,40 @@
+import { useEffect, useState } from "react";
+import jwt_decode from "jwt-decode";
+
 const Login = () => {
-    return(
-        <>
-<section className="container">
-      <header>Registration Form</header>
-      <form action="#" className="form">
-        <div className="input-box">
-          <label>Full Name</label>
-          <input type="text" placeholder="Enter full name" required />
-        </div>
+  const [user, setUser] = useState({});
+  function handleCallbackResponse(response) {
+    console.log("Encoded JWT ID token: " + response.credential);
+    let userObject = jwt_decode(response.credential);
+    console.log(userObject);
+    setUser(userObject);
+  }
 
-        <div className="input-box">
-          <label>Email Address</label>
-          <input type="text" placeholder="Enter email address" required />
-        </div>
+  useEffect(() => {
+    /* global google*/
+    google.accounts.id.initialize({
+      client_id:
+        "386716839775-0qep8cemua3mia1gh4l899ncr5co478n.apps.googleusercontent.com",
+      callback: handleCallbackResponse,
+    });
 
-        <div className="column">
-          <div className="input-box">
-            <label>Phone Number</label>
-            <input type="number" placeholder="Enter phone number" required />
-          </div>
-          <div className="input-box">
-            <label>Birth Date</label>
-            <input type="date" placeholder="Enter birth date" required />
-          </div>
+    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+      theme: "outline",
+      size: "large",
+    });
+  }, []);
+
+  return (
+    <>
+      <div id="signInDiv"></div>
+      {user && (
+        <div>
+          <h2>{user.email}</h2>
+          <h3>{user.name}</h3>
         </div>
-        
-        <div className="input-box address">
-          <label>Address</label>
-          <input type="text" placeholder="Enter street address" required />
-          <input type="text" placeholder="Enter street address line 2" required />
-          <div className="column">
-            <input type="text" placeholder="Enter your city" required />
-          </div>
-          <div className="column">
-            <input type="text" placeholder="Enter your region" required />
-            <input type="number" placeholder="Enter postal code" required />
-          </div>
-        </div>
-        <button>Submit</button>
-      </form>
-    </section>
-        </>
-    ) 
-  };
-  
-  export default Login;
+      )}
+    </>
+  );
+};
+
+export default Login;
