@@ -10,7 +10,7 @@ const Login = () => {
   async function addUser(name, email){
     
     const { data, error } = await supabase
-    .from('users')
+    .from('test-users')
     .insert([
       { name: name },
       { email: email },
@@ -22,6 +22,8 @@ const Login = () => {
     console.log("Encoded JWT ID token: " + response.credential);
     let userObject = jwt_decode(response.credential);
     console.log(userObject.name);
+    console.log(userObject.email);
+
     addUser(userObject.name, userObject.email)
   }
 
